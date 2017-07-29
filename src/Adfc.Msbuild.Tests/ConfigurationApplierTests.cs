@@ -23,7 +23,7 @@ namespace Adfc.Msbuild.Tests
         }
 
         [TestMethod]
-        public void ShouldRecordWarningIfJPathDoesNotExist()
+        public void ShouldReportErrorIfJPathDoesNotExist()
         {
             const string jpath = "$.notexists";
 
@@ -102,6 +102,25 @@ namespace Adfc.Msbuild.Tests
             target.ApplyTransforms(documents, config);
 
             Assert.AreEqual(0, target.Errors.Count, "There should not be any errors");
+        }
+
+        [TestMethod]
+        public void ShouldReportErrorWhenFileCannotBeFound()
+        {
+            var config = new JsonFile("config.json",
+                JObject.Parse("{'file.json':[{'name':'$.name','value':''}]}"));
+            var documents = new List<JsonFile>();
+
+            var target = new ConfigurationApplier();
+            target.ApplyTransforms(documents, config);
+
+            Assert.AreEqual(1, target.Errors.Count, "Unexpected number of errors");
+            var error = target.Errors[0];
+            Assert.IsTrue(error.Message.Contains("file.json"), "Error message does not contain document's filename");
+            Assert.AreEqual(config.Identity, error.FileName, "error.FileName is incorrect");
+            Assert.AreEqual(ErrorCodes.Adfc0002, error.Code, "Error code is incorrect");
+            Assert.AreEqual(1, error.LineNumber, "Error line number is incorrect");
+            Assert.AreEqual(13, error.LinePosition, "Error line position is incorrect");
         }
     }
 }

@@ -52,18 +52,35 @@ namespace Adfc.Msbuild
 
         public void ApplyTransforms(List<JsonFile> documents, JsonFile config)
         {
-            foreach (var file in config.Json)
+            foreach (JProperty file in config.Json.Children())
             {
-                if (file.Key[0] == '$')
+                if (file.Name[0] == '$')
                 {
                     continue;
                 }
 
-                var document = documents.SingleOrDefault(d => string.Equals(d.Identity, file.Key));
+                var document = documents.SingleOrDefault(d => string.Equals(d.Identity, file.Name));
+                if (document == null)
+                {
+                    var lineInfo = file as IJsonLineInfo;
 
-                var transforms = file.Value as JArray;
+                    var error = new BuildError
+                    {
+                        Code = ErrorCodes.Adfc0002,
+                        Message = $"{file.Name} not found",
+                        FileName = config.Identity,
+                        LineNumber = lineInfo?.LineNumber,
+                        LinePosition = lineInfo?.LinePosition
+                    };
 
-                ApplyTransforms(document, transforms, config);
+                    Errors.Add(error);
+                }
+                else
+                {
+                    var transforms = file.Value as JArray;
+
+                    ApplyTransforms(document, transforms, config);
+                }
             }
         }
     }
