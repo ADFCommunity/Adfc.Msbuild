@@ -90,5 +90,18 @@ namespace Adfc.Msbuild.Tests
             const string file2Expected = "{\"name\":\"new file2\"}";
             Assert.AreEqual(file2Expected, file2.Json.ToString(Formatting.None));
         }
+
+        [TestMethod]
+        public void ShouldIgnoreJsonMetadata()
+        {
+            var config = new JsonFile("config.json",
+                JObject.Parse("{'$schema':'https://server/schema.json'}"));
+            var documents = new List<JsonFile>();
+
+            var target = new ConfigurationApplier();
+            target.ApplyTransforms(documents, config);
+
+            Assert.AreEqual(0, target.Errors.Count, "There should not be any errors");
+        }
     }
 }

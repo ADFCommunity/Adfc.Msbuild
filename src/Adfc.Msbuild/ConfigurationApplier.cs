@@ -54,6 +54,11 @@ namespace Adfc.Msbuild
         {
             foreach (var file in config.Json)
             {
+                if (file.Key[0] == '$')
+                {
+                    continue;
+                }
+
                 var document = documents.SingleOrDefault(d => string.Equals(d.Identity, file.Key));
 
                 var transforms = file.Value as JArray;
