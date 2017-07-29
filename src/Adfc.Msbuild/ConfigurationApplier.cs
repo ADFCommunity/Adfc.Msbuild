@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -46,6 +47,18 @@ namespace Adfc.Msbuild
             foreach (JObject transform in transforms)
             {
                 ApplyTransform(document, transform, config);
+            }
+        }
+
+        public void ApplyTransforms(List<JsonFile> documents, JsonFile config)
+        {
+            foreach (var file in config.Json)
+            {
+                var document = documents.SingleOrDefault(d => string.Equals(d.Identity, file.Key));
+
+                var transforms = file.Value as JArray;
+
+                ApplyTransforms(document, transforms, config);
             }
         }
     }

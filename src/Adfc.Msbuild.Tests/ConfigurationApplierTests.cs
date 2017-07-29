@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
@@ -62,6 +63,32 @@ namespace Adfc.Msbuild.Tests
 
             const string expected = @"{""p1"":""new v1"",""p2"":""new v2""}";
             Assert.AreEqual(expected, document.Json.ToString(Formatting.None));
+        }
+
+        [TestMethod]
+        public void ShouldApplyConfigurationChangesToMultipleFiles()
+        {
+            var config = new JsonFile("config.json",
+                JObject.Parse(@"{
+    'file1.json':[{'name':'$.name','value':'new file1'}],
+    'file2.json':[{'name':'$.name','value':'new file2'}],
+}"));
+            var file1 = new JsonFile("file1.json",
+                JObject.Parse("{'name':'file1'}"));
+            var file2 = new JsonFile("file2.json",
+                JObject.Parse("{'name':'file2'}"));
+            var documents = new List<JsonFile>()
+            {
+                file1, file2
+            };
+
+            var target = new ConfigurationApplier();
+            target.ApplyTransforms(documents, config);
+
+            const string file1Expected = "{\"name\":\"new file1\"}";
+            Assert.AreEqual(file1Expected, file1.Json.ToString(Formatting.None));
+            const string file2Expected = "{\"name\":\"new file2\"}";
+            Assert.AreEqual(file2Expected, file2.Json.ToString(Formatting.None));
         }
     }
 }
