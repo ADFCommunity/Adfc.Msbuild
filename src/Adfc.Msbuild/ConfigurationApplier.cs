@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -38,6 +39,14 @@ namespace Adfc.Msbuild
 
             var parent = (JProperty)toReplace.Parent;
             parent.Value = value;
+        }
+
+        public void ApplyTransforms(JsonFile document, JArray transforms, JsonFile config)
+        {
+            foreach (JObject transform in transforms)
+            {
+                ApplyTransform(document, transform, config);
+            }
         }
     }
 }

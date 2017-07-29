@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -45,6 +45,23 @@ namespace Adfc.Msbuild.Tests
             Assert.AreEqual(ErrorCodes.Adfc0001, error.Code, "Error code is incorrect");
             Assert.AreEqual(2, error.LineNumber, "Error line number is incorrect");
             Assert.AreEqual(24, error.LinePosition, "Error line position is incorrect");
+        }
+
+        [TestMethod]
+        public void ShouldApplyMultipleConfigurationChanges()
+        {
+            var config = new JsonFile("config.json",
+                JObject.Parse("{'document.json': [{'name':'$.p1','value':'new v1'}," +
+                "{'name':'$.p2','value':'new v2'}]}"));
+            var document = new JsonFile("document.json",
+                JObject.Parse("{'p1':'v1','p2':'v2'}"));
+            var confgTransforms = (JArray)config.Json[document.Identity];
+
+            var target = new ConfigurationApplier();
+            target.ApplyTransforms(document, confgTransforms, config);
+
+            const string expected = @"{""p1"":""new v1"",""p2"":""new v2""}";
+            Assert.AreEqual(expected, document.Json.ToString(Formatting.None));
         }
     }
 }
