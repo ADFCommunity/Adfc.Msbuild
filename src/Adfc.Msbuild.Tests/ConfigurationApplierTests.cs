@@ -12,8 +12,14 @@ namespace Adfc.Msbuild.Tests
         [TestMethod]
         public void ShouldTransformSingleField()
         {
-            var config = new JsonFile("config.json", JObject.Parse("{'name':'$.name','value':'new name'}"));
-            var document = new JsonFile("file.json", JObject.Parse("{'name':'old name'}"));
+            var config = new JsonFile("config",
+                "config.json",
+                JObject.Parse("{'name':'$.name','value':'new name'}"),
+                ArtefactCategory.Config);
+            var document = new JsonFile("file",
+                "file.json",
+                JObject.Parse("{'name':'old name'}"),
+                ArtefactCategory.Dataset);
 
             var target = new ConfigurationApplier();
             target.ApplyTransform(document, config.Json, config);
@@ -27,13 +33,17 @@ namespace Adfc.Msbuild.Tests
         {
             const string jpath = "$.notexists";
 
-            var config = new JsonFile(
+            var config = new JsonFile("config",
                 "config.json",
                 JObject.Parse($@"{{
     'name':'{jpath}',
     'value':'not used'
-}}"));
-            var document = new JsonFile("content.json", JObject.Parse("{}"));
+}}"),
+                ArtefactCategory.Config);
+            var document = new JsonFile("content",
+                "content.json",
+                JObject.Parse("{}"),
+                ArtefactCategory.Dataset);
 
             var target = new ConfigurationApplier();
             target.ApplyTransform(document, config.Json, config);
@@ -51,11 +61,15 @@ namespace Adfc.Msbuild.Tests
         [TestMethod]
         public void ShouldApplyMultipleConfigurationChanges()
         {
-            var config = new JsonFile("config.json",
+            var config = new JsonFile("config",
+                "config.json",
                 JObject.Parse("{'document.json': [{'name':'$.p1','value':'new v1'}," +
-                "{'name':'$.p2','value':'new v2'}]}"));
-            var document = new JsonFile("document.json",
-                JObject.Parse("{'p1':'v1','p2':'v2'}"));
+                "{'name':'$.p2','value':'new v2'}]}"),
+                ArtefactCategory.Config);
+            var document = new JsonFile("document",
+                "document.json",
+                JObject.Parse("{'p1':'v1','p2':'v2'}"),
+                ArtefactCategory.Dataset);
             var confgTransforms = (JArray)config.Json[document.Identity];
 
             var target = new ConfigurationApplier();
@@ -68,15 +82,21 @@ namespace Adfc.Msbuild.Tests
         [TestMethod]
         public void ShouldApplyConfigurationChangesToMultipleFiles()
         {
-            var config = new JsonFile("config.json",
+            var config = new JsonFile("config",
+                "config.json",
                 JObject.Parse(@"{
     'file1.json':[{'name':'$.name','value':'new file1'}],
     'file2.json':[{'name':'$.name','value':'new file2'}],
-}"));
-            var file1 = new JsonFile("file1.json",
-                JObject.Parse("{'name':'file1'}"));
-            var file2 = new JsonFile("file2.json",
-                JObject.Parse("{'name':'file2'}"));
+}"),
+                ArtefactCategory.Config);
+            var file1 = new JsonFile("file1",
+                "file1.json",
+                JObject.Parse("{'name':'file1'}"),
+                ArtefactCategory.Dataset);
+            var file2 = new JsonFile("file2",
+                "file2.json",
+                JObject.Parse("{'name':'file2'}"),
+                ArtefactCategory.Dataset);
             var documents = new List<JsonFile>()
             {
                 file1, file2
@@ -94,8 +114,10 @@ namespace Adfc.Msbuild.Tests
         [TestMethod]
         public void ShouldIgnoreJsonMetadata()
         {
-            var config = new JsonFile("config.json",
-                JObject.Parse("{'$schema':'https://server/schema.json'}"));
+            var config = new JsonFile("config",
+                "config.json",
+                JObject.Parse("{'$schema':'https://server/schema.json'}"),
+                ArtefactCategory.Config);
             var documents = new List<JsonFile>();
 
             var target = new ConfigurationApplier();
@@ -107,8 +129,10 @@ namespace Adfc.Msbuild.Tests
         [TestMethod]
         public void ShouldReportErrorWhenFileCannotBeFound()
         {
-            var config = new JsonFile("config.json",
-                JObject.Parse("{'file.json':[{'name':'$.name','value':''}]}"));
+            var config = new JsonFile("config",
+                "config.json",
+                JObject.Parse("{'file.json':[{'name':'$.name','value':''}]}"),
+                ArtefactCategory.Config);
             var documents = new List<JsonFile>();
 
             var target = new ConfigurationApplier();
