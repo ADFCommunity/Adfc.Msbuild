@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
@@ -27,7 +27,7 @@ namespace Adfc.Msbuild
 
                 var error = new BuildError
                 {
-                    Code = ErrorCodes.Adfc0001,
+                    Code = ErrorCodes.Adfc0001.Code,
                     Message = $"{name} not found in {document.Identity}",
                     FileName = configFile.Identity,
                     LineNumber = lineInfo?.LineNumber,
@@ -50,7 +50,7 @@ namespace Adfc.Msbuild
             }
         }
 
-        public void ApplyTransforms(List<JsonFile> documents, JsonFile config)
+        public void ApplyTransforms(IList<JsonFile> documents, JsonFile config)
         {
             foreach (JProperty file in config.Json.Children())
             {
@@ -66,7 +66,7 @@ namespace Adfc.Msbuild
 
                     var error = new BuildError
                     {
-                        Code = ErrorCodes.Adfc0002,
+                        Code = ErrorCodes.Adfc0003.Code,
                         Message = $"{file.Name} not found",
                         FileName = config.Identity,
                         LineNumber = lineInfo?.LineNumber,
