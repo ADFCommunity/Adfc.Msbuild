@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
@@ -53,7 +53,7 @@ namespace Adfc.Msbuild.Tests
             Assert.IsTrue(error.Message.Contains(jpath), "Error does not contain jpath");
             Assert.IsTrue(error.Message.Contains(document.Identity), "Error message does not contain document's filename");
             Assert.AreEqual(config.Identity, error.FileName, "error.FileName is incorrect");
-            Assert.AreEqual(ErrorCodes.Adfc0001, error.Code, "Error code is incorrect");
+            Assert.AreEqual(ErrorCodes.Adfc0001.Code, error.Code, "Error code is incorrect");
             Assert.AreEqual(2, error.LineNumber, "Error line number is incorrect");
             Assert.AreEqual(24, error.LinePosition, "Error line position is incorrect");
         }
@@ -142,7 +142,7 @@ namespace Adfc.Msbuild.Tests
             var error = target.Errors[0];
             Assert.IsTrue(error.Message.Contains("file.json"), "Error message does not contain document's filename");
             Assert.AreEqual(config.Identity, error.FileName, "error.FileName is incorrect");
-            Assert.AreEqual(ErrorCodes.Adfc0002, error.Code, "Error code is incorrect");
+            Assert.AreEqual(ErrorCodes.Adfc0003.Code, error.Code, "Error code is incorrect");
             Assert.AreEqual(1, error.LineNumber, "Error line number is incorrect");
             Assert.AreEqual(13, error.LinePosition, "Error line position is incorrect");
         }

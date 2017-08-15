@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -7,7 +7,7 @@ namespace Adfc.Msbuild
 {
     public class ResultSaver
     {
-        public async Task SaveDocuments(List<JsonFile> documents, JsonFile config, string outputPath)
+        public async Task SaveDocuments(IList<JsonFile> documents, JsonFile config, string outputPath)
         {
             var configPath = Path.Combine(outputPath, config.Name);
             if (!Directory.Exists(configPath))

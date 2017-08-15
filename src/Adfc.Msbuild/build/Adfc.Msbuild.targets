@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project>
+  <PropertyGroup>
+    <BaseOutputPath Condition="'$(BaseOutputPath)'==''">bin/</BaseOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Json Include="**/*.json" Exclude="$(BaseOutputPath)**" />
+  </ItemGroup>
+
+  <UsingTask 
+    TaskName="Adfc.Msbuild.AdfcBuild"
+    AssemblyFile="$(MSBuildThisFileDirectory)net46/Adfc.Msbuild.dll"/>
+
+  <Target Name="build">
+    <AdfcBuild
+      OutputPath="$(OutputPath)"
+      JsonFiles="@(Json)"
+      />
+  </Target>
+</Project>
