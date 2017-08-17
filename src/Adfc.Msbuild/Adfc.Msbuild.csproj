@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net46</TargetFramework>
     <BuildOutputTargetFolder>build</BuildOutputTargetFolder>
-    <Version>0.1.0</Version>
+    <Version>0.1.0-prerelease</Version>
     <PackageLicenseUrl>https://github.com/ADFCommunity/Adfc.Msbuild/blob/develop/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/ADFCommunity/Home</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ADFCommunity/Adfc.Msbuild</RepositoryUrl>
