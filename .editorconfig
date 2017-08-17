@@ -7,3 +7,8 @@ indent_style = spaces
 indent_size = 4
 insert_final_newline = true
 charset = utf-8
+
+[*.(proj|xslt)]
+indent_size = 2
+insert_final_newline = true
+charset = utf-8
