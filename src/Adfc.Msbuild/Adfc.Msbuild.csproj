@@ -2,6 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>net46</TargetFramework>
+    <BuildOutputTargetFolder>build</BuildOutputTargetFolder>
+    <Version>0.1.0</Version>
+    <PackageLicenseUrl>https://github.com/ADFCommunity/Adfc.Msbuild/blob/develop/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/ADFCommunity/Home</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/ADFCommunity/Adfc.Msbuild</RepositoryUrl>
+    <PackageTags>ADF Azure Data Factory</PackageTags>
+    <Company />
+    <Product />
+    <Description>Build tools for ADF Community project system projects.</Description>
+    <Copyright />
+    <Authors>adfcommunity</Authors>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,6 +24,10 @@
     <Reference Include="Microsoft.Build" />
     <Reference Include="Microsoft.Build.Framework" />
     <Reference Include="Microsoft.Build.Utilities.v4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="build\**" PackagePath="build\" />
   </ItemGroup>
 
   <Target AfterTargets="Build" Name="CopyAdfcMsbuildFiles">
