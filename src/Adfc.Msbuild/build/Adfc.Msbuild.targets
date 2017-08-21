@@ -5,7 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Json Include="**/*.json" Exclude="$(BaseOutputPath)**" />
+    <!-- todo: fix the excludes -->
+    <Json Include="**/*.json" Exclude="$(BaseOutputPath)**;obj\**" />
   </ItemGroup>
 
   <UsingTask 
