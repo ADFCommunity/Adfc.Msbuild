@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net46</TargetFramework>
     <BuildOutputTargetFolder>build</BuildOutputTargetFolder>
-    <Version>0.1.0-preview</Version>
+    <Version>0.1.1-preview</Version>
     <PackageLicenseUrl>https://github.com/ADFCommunity/Adfc.Msbuild/blob/develop/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/ADFCommunity/Home</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ADFCommunity/Adfc.Msbuild</RepositoryUrl>
@@ -13,6 +13,14 @@
     <Description>Build tools for ADF Community project system projects.</Description>
     <Copyright />
     <Authors>adfcommunity</Authors>
+    <!-- forces SDK to copy dependencies into build output to make packing easier -->
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
 
   <ItemGroup>
@@ -32,5 +40,19 @@
 
   <Target AfterTargets="Build" Name="CopyAdfcMsbuildFiles">
     <Copy SourceFiles="build/Adfc.Msbuild.targets" DestinationFolder="$(PackageOutputPath)" />
+  </Target>
+
+  <Target Name="PackTaskDependencies" BeforeTargets="GenerateNuspec">
+    <!--
+    The include needs to happen after output has been copied to build output folder
+    but before NuGet generates a nuspec. See https://github.com/NuGet/Home/issues/4704.
+    -->
+    <ItemGroup>
+      <_PackageFiles Include="bin\$(Configuration)\*\**" Exclude="bin\$(Configuration)\*\Adfc.Msbuild.dll">
+        <PackagePath>build\%(RecursiveDir)</PackagePath>
+        <Visible>false</Visible>
+        <BuildAction>Content</BuildAction>
+      </_PackageFiles>
+    </ItemGroup>
   </Target>
 </Project>
