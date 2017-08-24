@@ -1,15 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net46</TargetFramework>
+    <TargetFrameworks>net46;netstandard1.5</TargetFrameworks>
     <BuildOutputTargetFolder>build</BuildOutputTargetFolder>
-    <Version>0.1.1-preview</Version>
-    <PackageLicenseUrl>https://github.com/ADFCommunity/Adfc.Msbuild/blob/develop/LICENSE</PackageLicenseUrl>
+    <Version>0.1.2-preview</Version>
+    <PackageLicenseUrl>https://github.com/ADFCommunity/Adfc.Msbuild/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/ADFCommunity/Home</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ADFCommunity/Adfc.Msbuild</RepositoryUrl>
     <PackageTags>ADF Azure Data Factory</PackageTags>
     <Company />
-    <Product />
+    <Product>Adfc.Msbuild</Product>
     <Description>Build tools for ADF Community project system projects.</Description>
     <Copyright />
     <Authors>adfcommunity</Authors>
@@ -24,14 +24,27 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
-    <PackageReference Include="System.ValueTuple" Version="4.3.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3">
+      <PrivateAssets>All</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="System.ValueTuple" Version="4.3.1">
+      <PrivateAssets>All</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net46'">
     <Reference Include="Microsoft.Build" />
     <Reference Include="Microsoft.Build.Framework" />
     <Reference Include="Microsoft.Build.Utilities.v4.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.5'">
+    <PackageReference Include="Microsoft.Build" Version="15.3.409">
+      <PrivateAssets>All</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.3.409">
+      <PrivateAssets>All</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>

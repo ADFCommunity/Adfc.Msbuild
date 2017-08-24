@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -17,6 +17,7 @@ namespace Adfc.Msbuild
 
         public override bool Execute()
         {
+            try {
 #if DEBUG
             if (Environment.GetEnvironmentVariable("AdfcBuildDebug") != null)
             {
@@ -27,6 +28,10 @@ namespace Adfc.Msbuild
 #endif
 
             ExecuteAsync().Wait();
+            }
+            catch (Exception e){
+                Console.WriteLine(e);
+            }
 
             return !Log.HasLoggedErrors;
         }
@@ -66,7 +71,7 @@ namespace Adfc.Msbuild
                 }
                 catch (Exception e)
                 {
-                    Log.LogError("exception trying to load file", e);
+                    Log.LogError("exception trying to load file "+e, e);
                 }
             }
 
@@ -75,7 +80,7 @@ namespace Adfc.Msbuild
 
         private async Task<string> ReadContents(string fullPath)
         {
-            using (var stream = new StreamReader(fullPath))
+            using (var stream = new StreamReader(File.OpenRead(fullPath)))
             {
                 return await stream.ReadToEndAsync();
             }

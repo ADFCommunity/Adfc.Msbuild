@@ -9,9 +9,15 @@
     <Json Include="**/*.json" Exclude="$(BaseOutputPath)**;obj\**" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <TaskFolder Condition=" '$(MSBuildRuntimeType)' == 'Core' ">netstandard1.5</TaskFolder>
+    <TaskFolder Condition=" '$(MSBuildRuntimeType)' != 'Core' ">net46</TaskFolder>
+    <TaskAssembly>$(MSBuildThisFileDirectory)$(TaskFolder)\Adfc.Msbuild.dll</TaskAssembly>
+  </PropertyGroup>
+
   <UsingTask 
     TaskName="Adfc.Msbuild.AdfcBuild"
-    AssemblyFile="$(MSBuildThisFileDirectory)net46/Adfc.Msbuild.dll"/>
+    AssemblyFile="$(TaskAssembly)"/>
 
   <Target Name="build">
     <AdfcBuild

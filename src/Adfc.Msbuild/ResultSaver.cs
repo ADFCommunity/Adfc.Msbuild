@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -30,7 +30,7 @@ namespace Adfc.Msbuild
             }
 
             var filePath = Path.Combine(categoryPath, document.Name + ".json");
-            using (var writer = new StreamWriter(filePath))
+            using (var writer = new StreamWriter(File.OpenWrite(filePath)))
             using (var jsonWriter = new JsonTextWriter(writer))
             {
                 jsonWriter.Formatting = Formatting.Indented;
