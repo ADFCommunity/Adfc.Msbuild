@@ -1,4 +1,3 @@
 <Project>
-    <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
-    <Import Project="..\..\src\Adfc.Msbuild\bin\Debug\Adfc.Msbuild.targets" />
+  <Import Project="..\Samples.props" />
 </Project>
