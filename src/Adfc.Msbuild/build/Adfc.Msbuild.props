@@ -1,0 +1,7 @@
+﻿<Project>
+  <PropertyGroup>
+    <BaseOutputPath>bin\</BaseOutputPath>
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <OutputPath>$(BaseOutputPath)$(Configuration)\</OutputPath>
+  </PropertyGroup>
+</Project>
