@@ -4,7 +4,7 @@
     <TargetFramework>net46</TargetFramework>
     <BuildOutputTargetFolder>build</BuildOutputTargetFolder>
     <Version>0.1.2-preview</Version>
-    <PackageLicenseUrl>https://github.com/ADFCommunity/Adfc.Msbuild/blob/develop/LICENSE</PackageLicenseUrl>
+    <PackageLicenseUrl>https://github.com/ADFCommunity/Adfc.Msbuild/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/ADFCommunity/Home</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ADFCommunity/Adfc.Msbuild</RepositoryUrl>
     <PackageTags>ADF Azure Data Factory</PackageTags>
