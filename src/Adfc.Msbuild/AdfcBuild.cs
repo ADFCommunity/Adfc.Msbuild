@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -133,18 +133,18 @@ namespace Adfc.Msbuild
             switch (severity)
             {
                 case ErrorSeverity.Information:
-                    Log.LogMessage("ADFBuild", error.Code, "help keyword", error.FileName, error.LineNumber, error.LinePosition,
-                        error.LineNumber, error.LinePosition, error.Message);
+                    Log.LogMessage("ADFBuild", error.Code, "help keyword", error.FileName, error.LineNumber ?? 0, error.LinePosition ?? 0,
+                        error.LineNumber ?? 0, error.LinePosition ?? 0, error.Message);
                     break;
 
                 case ErrorSeverity.Warning:
-                    Log.LogWarning("ADFBuild", error.Code, "help keyword", error.FileName, error.LineNumber, error.LinePosition,
-                        error.LineNumber, error.LinePosition, error.Message);
+                    Log.LogWarning("ADFBuild", error.Code, "help keyword", error.FileName, error.LineNumber ?? 0, error.LinePosition ?? 0,
+                        error.LineNumber ?? 0, error.LinePosition ?? 0, message: error.Message);
                     break;
 
                 case ErrorSeverity.Error:
-                    Log.LogError("ADFBuild", error.Code, "help keyword", error.FileName, error.LineNumber, error.LinePosition,
-                        error.LineNumber, error.LinePosition, error.Message);
+                    Log.LogError("ADFBuild", error.Code, "help keyword", error.FileName, error.LineNumber ?? 0, error.LinePosition ?? 0,
+                        error.LineNumber ?? 0, error.LinePosition ?? 0, error.Message, (object[])null);
                     break;
             }
         }
