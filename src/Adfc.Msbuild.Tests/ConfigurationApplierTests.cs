@@ -142,7 +142,7 @@ namespace Adfc.Msbuild.Tests
             var error = target.Errors[0];
             Assert.IsTrue(error.Message.Contains("file.json"), "Error message does not contain document's filename");
             Assert.AreEqual(config.Identity, error.FileName, "error.FileName is incorrect");
-            Assert.AreEqual(ErrorCodes.Adfc0003.Code, error.Code, "Error code is incorrect");
+            Assert.AreEqual(ErrorCodes.Adfc0002.Code, error.Code, "Error code is incorrect");
             Assert.AreEqual(1, error.LineNumber, "Error line number is incorrect");
             Assert.AreEqual(13, error.LinePosition, "Error line position is incorrect");
         }

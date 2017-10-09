@@ -66,7 +66,7 @@ namespace Adfc.Msbuild
 
                     var error = new BuildError
                     {
-                        Code = ErrorCodes.Adfc0003.Code,
+                        Code = ErrorCodes.Adfc0002.Code,
                         Message = $"{file.Name} not found",
                         FileName = config.Identity,
                         LineNumber = lineInfo?.LineNumber,
