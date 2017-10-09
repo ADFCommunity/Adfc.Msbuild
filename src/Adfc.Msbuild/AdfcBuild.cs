@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Build.Framework;
 using Newtonsoft.Json.Linq;
+using System.Runtime.ExceptionServices;
 
 namespace Adfc.Msbuild
 {
@@ -26,7 +27,30 @@ namespace Adfc.Msbuild
             }
 #endif
 
-            ExecuteAsync().Wait();
+            try
+            {
+                try
+                {
+                    ExecuteAsync().Wait();
+                }
+                catch (AggregateException exception)
+                {
+                    if (exception.InnerExceptions.Count == 1)
+                    {
+                        var edi = ExceptionDispatchInfo.Capture(exception.InnerException);
+                        edi.Throw();
+                    }
+
+                    throw;
+                }
+            }
+            catch (Exception exception)
+            {
+                Log.LogError("Internal AdfcBuild error. Please check that your project is " +
+                    "referencing the latest version of the Adfc.Msbuild Nuget package. If this " +
+                    "error persists, please log an issue at https://github.com/ADFCommunity/Home/issues/new. " +
+                    "Exception details:\n" + exception);
+            }
 
             return !Log.HasLoggedErrors;
         }
@@ -55,30 +79,28 @@ namespace Adfc.Msbuild
             var errors = new List<BuildError>();
             foreach (var jsonFile in JsonFiles)
             {
-                string identity;
+                string identity = jsonFile.GetMetadata("Identity");
                 try
                 {
-                    identity = jsonFile.GetMetadata("Identity");
                     var fullPath = jsonFile.GetMetadata("FullPath");
-                    var contents = await ReadContents(fullPath);
-                    var file = JsonFileLoader.Parse(contents, identity);
-                    files.Add(file);
+                    using (var reader = new StreamReader(fullPath))
+                    {
+                        var loader = new JsonFileLoader();
+                        await loader.LoadAsync(identity, reader);
+                        if (loader.JsonFile != null)
+                        {
+                            files.Add(loader.JsonFile);
+                        }
+                        OutputErrors(loader.Errors);
+                    }
                 }
                 catch (Exception e)
                 {
-                    Log.LogError("exception trying to load file", e);
+                    Log.LogError($"exception trying to load file {identity}: {e}");
                 }
             }
 
             return files;
-        }
-
-        private async Task<string> ReadContents(string fullPath)
-        {
-            using (var stream = new StreamReader(fullPath))
-            {
-                return await stream.ReadToEndAsync();
-            }
         }
 
         private (IList<JsonFile> configs, IList<JsonFile> artefacts) FilterJsonFiles(IEnumerable<JsonFile> jsonFiles)
@@ -100,7 +122,14 @@ namespace Adfc.Msbuild
                         break;
 
                     default:
-                        throw new Exception("Unknown JSON file category.");
+                        var error = new BuildError()
+                        {
+                            Code = ErrorCodes.Adfc0003.Code,
+                            FileName = file.Identity,
+                            Message = "Unable to determine Data Factory artefact type. You can specify the JSON schema to explicityle set the type."
+                        };
+                        OutputError(error);
+                        break;
                 }
             }
 
@@ -119,7 +148,7 @@ namespace Adfc.Msbuild
             return artefactCopies;
         }
 
-        private void OutputErrors(IList<BuildError> errors)
+        private void OutputErrors(IEnumerable<BuildError> errors)
         {
             foreach(var error in errors)
             {
@@ -145,6 +174,10 @@ namespace Adfc.Msbuild
                 case ErrorSeverity.Error:
                     Log.LogError("ADFBuild", error.Code, "help keyword", error.FileName, error.LineNumber ?? 0, error.LinePosition ?? 0,
                         error.LineNumber ?? 0, error.LinePosition ?? 0, error.Message, (object[])null);
+                    break;
+
+                default:
+                    Log.LogError("Internal error. Unknown error severity " + severity);
                     break;
             }
         }
