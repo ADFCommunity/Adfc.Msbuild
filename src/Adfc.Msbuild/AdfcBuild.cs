@@ -1,10 +1,10 @@
+using Microsoft.Build.Framework;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
-using Microsoft.Build.Framework;
-using Newtonsoft.Json.Linq;
 using System.Runtime.ExceptionServices;
+using System.Threading.Tasks;
 
 namespace Adfc.Msbuild
 {
@@ -58,9 +58,13 @@ namespace Adfc.Msbuild
         private async Task ExecuteAsync()
         {
             var jsonFiles = await LoadJsonFiles();
-            var (configs, artefacts) = FilterJsonFiles(jsonFiles);
             if (!Log.HasLoggedErrors)
             {
+                var (configs, artefacts) = FilterJsonFiles(jsonFiles);
+                if (configs.Count == 0)
+                {
+                    configs.Add(new JsonFile("NoConfig", null, new JObject(), ArtefactCategory.Config));
+                }
                 foreach (var config in configs)
                 {
                     var transformedArtefacts = ApplyConfig(config, artefacts);
