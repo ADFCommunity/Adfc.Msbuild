@@ -1,0 +1,27 @@
+{
+    "type": "object",
+    "properties": { 
+        "$schema": {
+            "type": "string"
+        }
+    },
+    "patternProperties": {
+        "^[a-zA-Z]": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "pattern": "(^\\$\\.[a-zA-z][a-zA-Z0-9]*(\\.[a-zA-z][a-zA-z0-9]*)*)"
+                    },
+                    "value": {
+
+                    }
+                },
+                "required": [ "name", "value" ], 
+                "additionalProperties": false
+            }
+        }
+    }
+}
