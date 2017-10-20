@@ -10,9 +10,13 @@ namespace Adfc.Msbuild.Tests
     internal class MockHttpMessageHandler : HttpMessageHandler
     {
         public Dictionary<Uri, HttpResponseMessage> Routes { get; }
+        public IReadOnlyList<HttpRequestMessage> Requests => _requests;
+
+        private List<HttpRequestMessage> _requests;
 
         public MockHttpMessageHandler()
         {
+            _requests = new List<HttpRequestMessage>();
             Routes = new Dictionary<Uri, HttpResponseMessage>();
 
             Routes.Add(new Uri(JsonSchemaUri.Config), CreateHttpResponse(Resources.Microsoft_DataFactory_Config));
@@ -32,6 +36,8 @@ namespace Adfc.Msbuild.Tests
 
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
+            _requests.Add(request);
+
             HttpResponseMessage response;
             if (Routes.TryGetValue(request.RequestUri, out response))
             {

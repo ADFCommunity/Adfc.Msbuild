@@ -111,7 +111,7 @@ namespace Adfc.Msbuild
 
         private async Task ValidateJsonFilesAsync(IList<JsonFile> jsonFiles)
         {
-            using (var httpClient = new HttpClient())
+            using (var httpClient = new HttpClient(new CachingDelegatingHandler(new OfflineDelegatingHandler(new HttpClientHandler()))))
             {
                 foreach (var jsonFile in jsonFiles)
                 {
