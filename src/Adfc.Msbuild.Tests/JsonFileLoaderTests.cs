@@ -8,16 +8,11 @@ namespace Adfc.Msbuild.Tests
     [TestClass]
     public class JsonFileLoaderTests
     {
-        private const string DatasetJson = "{'name':'test','$schema':'http://datafactories.schema.management.azure.com/schemas/2015-09-01/Microsoft.DataFactory.Table.json'}";
-        private const string LinkedServiceJson = "{'name':'test','$schema':'http://datafactories.schema.management.azure.com/schemas/2015-09-01/Microsoft.DataFactory.LinkedService.json'}";
-        private const string PipelineJson = "{'name':'test','$schema':'http://datafactories.schema.management.azure.com/schemas/2015-09-01/Microsoft.DataFactory.Pipeline.json'}";
-        private const string ConfigJson = "{'$schema':'http://datafactories.schema.management.azure.com/vsschemas/V1/Microsoft.DataFactory.Config.json'}";
-
         [TestMethod]
         public async Task LoadDatasetFileAsync()
         {
             var target = new JsonFileLoader();
-            using (var reader = new StringReader(DatasetJson))
+            using (var reader = new StringReader(JsonSample.Dataset))
             {
                 await target.LoadAsync("file.json", reader);
             }
@@ -35,7 +30,7 @@ namespace Adfc.Msbuild.Tests
         public async Task LoadLinkedServiceFileAsync()
         {
             var target = new JsonFileLoader();
-            using (var reader = new StringReader(LinkedServiceJson))
+            using (var reader = new StringReader(JsonSample.LinkedService))
             {
                 await target.LoadAsync("file.json", reader);
             }
@@ -53,7 +48,7 @@ namespace Adfc.Msbuild.Tests
         public async Task LoadPipelineFile()
         {
             var target = new JsonFileLoader();
-            using (var reader = new StringReader(PipelineJson))
+            using (var reader = new StringReader(JsonSample.Pipeline))
             {
                 await target.LoadAsync("file.json", reader);
             }
@@ -71,7 +66,7 @@ namespace Adfc.Msbuild.Tests
         public async Task LoadConfigFileAsync()
         {
             var target = new JsonFileLoader();
-            using (var reader = new StringReader(ConfigJson))
+            using (var reader = new StringReader(JsonSample.Config))
             {
                 await target.LoadAsync("file.json", reader);
             }
@@ -128,7 +123,7 @@ namespace Adfc.Msbuild.Tests
         public async Task CannotLoadTwiceAsync()
         {
             var target = new JsonFileLoader();
-            using (var reader = new StringReader(ConfigJson))
+            using (var reader = new StringReader(JsonSample.Config))
             {
                 await target.LoadAsync("config.json", reader);
                 await Assert.ThrowsExceptionAsync<InvalidOperationException>(() => target.LoadAsync("config.json", reader));

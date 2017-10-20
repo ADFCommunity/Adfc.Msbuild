@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Http;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 
@@ -58,6 +59,7 @@ namespace Adfc.Msbuild
         private async Task ExecuteAsync()
         {
             var jsonFiles = await LoadJsonFiles();
+            await ValidateJsonFilesAsync(jsonFiles);
             if (!Log.HasLoggedErrors)
             {
                 var (configs, artefacts) = FilterJsonFiles(jsonFiles);
@@ -105,6 +107,22 @@ namespace Adfc.Msbuild
             }
 
             return files;
+        }
+
+        private async Task ValidateJsonFilesAsync(IList<JsonFile> jsonFiles)
+        {
+            using (var httpClient = new HttpClient(new CachingDelegatingHandler(new OfflineDelegatingHandler(new HttpClientHandler()))))
+            {
+                foreach (var jsonFile in jsonFiles)
+                {
+                    var validator = new JsonSchemaValidation(httpClient);
+                    var error = await validator.ValidateAsync(jsonFile);
+                    if (error != null)
+                    {
+                        OutputError(error);
+                    }
+                }
+            }
         }
 
         private (IList<JsonFile> configs, IList<JsonFile> artefacts) FilterJsonFiles(IEnumerable<JsonFile> jsonFiles)

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -34,8 +34,9 @@ namespace Adfc.Msbuild
             using (var jsonWriter = new JsonTextWriter(writer))
             {
                 jsonWriter.Formatting = Formatting.Indented;
-                return document.Json.WriteToAsync(jsonWriter);
+                document.Json.WriteTo(jsonWriter);
             }
+            return Task.CompletedTask;
         }
     }
 }

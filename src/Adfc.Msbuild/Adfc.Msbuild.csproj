@@ -25,13 +25,37 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.3.409" PrivateAssets="All" />
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" PrivateAssets="All" />
-    <PackageReference Include="System.ValueTuple" Version="4.3.1" PrivateAssets="All" />
+    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" PrivateAssets="All" />
+    <PackageReference Include="NJsonSchema" Version="9.8.3" PrivateAssets="All" />
+    <PackageReference Include="System.Net.Http" Version="4.3.3" PrivateAssets="All" />
+    <PackageReference Include="System.ValueTuple" Version="4.4.0" PrivateAssets="All" />
   </ItemGroup>
 
   <!-- include build files in nuget package -->
   <ItemGroup>
     <Content Include="build\**" PackagePath="build\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Resource.Designer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Remove="Resource.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
   <!-- copy build files to bin directory, so the relative paths they contain to adfc.msbuild.dll work
