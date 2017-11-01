@@ -1,3 +1,4 @@
+using Adfc.Msbuild.Validation;
 using Microsoft.Build.Framework;
 using Newtonsoft.Json.Linq;
 using System;
@@ -59,23 +60,28 @@ namespace Adfc.Msbuild
         private async Task ExecuteAsync()
         {
             var jsonFiles = await LoadJsonFiles();
-            await ValidateJsonFilesAsync(jsonFiles);
-            if (!Log.HasLoggedErrors)
+            using (var httpClient = CreateHttpClient())
             {
-                var (configs, artefacts) = FilterJsonFiles(jsonFiles);
-                if (configs.Count == 0)
+                var validators = new ValidationsFactory(httpClient).GetValidators();
+                await RunValidationsAsync(jsonFiles, validators);
+                if (!Log.HasLoggedErrors)
                 {
-                    configs.Add(new JsonFile("NoConfig", null, new JObject(), ArtefactCategory.Config));
+                    var (configs, artefacts) = FilterJsonFiles(jsonFiles);
+                    if (configs.Count == 0)
+                    {
+                        configs.Add(new JsonFile("NoConfig", null, new JObject(), ArtefactCategory.Config));
+                    }
+                    foreach (var config in configs)
+                    {
+                        var transformedArtefacts = ApplyConfig(config, artefacts);
+                        await RunValidationsAsync(transformedArtefacts, validators);
+                        await SaveOutput(config, transformedArtefacts);
+                    }
                 }
-                foreach (var config in configs)
+                else
                 {
-                    var transformedArtefacts = ApplyConfig(config, artefacts);
-                    await SaveOutput(config, transformedArtefacts);
+                    Log.LogMessage("Not generating output due to error(s) before configuration transformations.");
                 }
-            }
-            else
-            {
-                Log.LogMessage("Not generating output due to error(s) before configuration transformations.");
             }
         }
 
@@ -109,20 +115,24 @@ namespace Adfc.Msbuild
             return files;
         }
 
-        private async Task ValidateJsonFilesAsync(IList<JsonFile> jsonFiles)
+        private async Task RunValidationsAsync(IList<JsonFile> jsonFiles, IReadOnlyList<IValidation> validators)
         {
-            using (var httpClient = new HttpClient(new CachingDelegatingHandler(new OfflineDelegatingHandler(new HttpClientHandler()))))
+            foreach (var validator in validators)
             {
-                foreach (var jsonFile in jsonFiles)
+                var errors = await validator.ValidateAsync(jsonFiles);
+                if (errors != null)
                 {
-                    var validator = new JsonSchemaValidation(httpClient);
-                    var error = await validator.ValidateAsync(jsonFile);
-                    if (error != null)
+                    foreach (var error in errors)
                     {
                         OutputError(error);
                     }
                 }
             }
+        }
+
+        private HttpClient CreateHttpClient()
+        {
+            return new HttpClient(new CachingDelegatingHandler(new OfflineDelegatingHandler(new HttpClientHandler())));
         }
 
         private (IList<JsonFile> configs, IList<JsonFile> artefacts) FilterJsonFiles(IEnumerable<JsonFile> jsonFiles)

@@ -1,11 +1,10 @@
-using System;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
+using Adfc.Msbuild.Validation;
 
-namespace Adfc.Msbuild.Tests
+namespace Adfc.Msbuild.Tests.Validation
 {
     [TestClass]
     public class JsonSchemaValidationTests
