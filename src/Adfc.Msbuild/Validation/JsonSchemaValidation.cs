@@ -4,16 +4,31 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using NJsonSchema;
+using System.Collections.Generic;
 
-namespace Adfc.Msbuild
+namespace Adfc.Msbuild.Validation
 {
-    public class JsonSchemaValidation
+    public class JsonSchemaValidation : IValidation
     {
         private HttpClient _httpClient;
 
         public JsonSchemaValidation(HttpClient httpClient)
         {
             _httpClient = httpClient;
+        }
+
+        public async Task<IReadOnlyCollection<BuildError>> ValidateAsync(IList<JsonFile> jsonFiles)
+        {
+            var errors = new List<BuildError>();
+            foreach (var jsonFile in jsonFiles)
+            {
+                var result = await ValidateAsync(jsonFile);
+                if (result != null)
+                {
+                    errors.Add(result);
+                }
+            }
+            return errors;
         }
 
         public async Task<BuildError> ValidateAsync(JsonFile jsonFile)

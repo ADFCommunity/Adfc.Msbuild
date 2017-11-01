@@ -23,11 +23,14 @@ namespace Adfc.Msbuild
         /// <summary>Failed implicit JSON schema validation.</summary>
         public static readonly ErrorCodes Adfc0006 = new ErrorCodes("ADFC0006", ErrorSeverity.Error);
 
-        /// <summary>Error during JSON validation.</summary>
+        /// <summary>Error during JSON schema validation.</summary>
         public static readonly ErrorCodes Adfc0007 = new ErrorCodes("ADFC0007", ErrorSeverity.Error);
 
+        /// <summary>Artefact name is not unique.</summary>
+        public static readonly ErrorCodes Adfc0008 = new ErrorCodes("ADFC0008", ErrorSeverity.Error);
+
         public static IReadOnlyDictionary<string, ErrorCodes> All =
-            new[] { Adfc0001, Adfc0002, Adfc0003, Adfc0004, Adfc0005, Adfc0006, Adfc0007 }
+            new[] { Adfc0001, Adfc0002, Adfc0003, Adfc0004, Adfc0005, Adfc0006, Adfc0007, Adfc0008 }
             .ToDictionary(e => e.Code, e => e);
 
         public string Code { get; }

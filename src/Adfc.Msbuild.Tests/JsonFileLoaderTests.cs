@@ -21,7 +21,7 @@ namespace Adfc.Msbuild.Tests
             Assert.IsNotNull(result);
             Assert.AreEqual("file.json", result.Identity);
             Assert.AreEqual(ArtefactCategory.Dataset, result.Category);
-            Assert.AreEqual("test", result.Name);
+            Assert.AreEqual("TestDataset", result.Name);
             Assert.IsNotNull(result.Json);
             Assert.AreEqual(0, target.Errors.Count);
         }
@@ -39,7 +39,7 @@ namespace Adfc.Msbuild.Tests
             Assert.IsNotNull(result);
             Assert.AreEqual("file.json", result.Identity);
             Assert.AreEqual(ArtefactCategory.LinkedService, result.Category);
-            Assert.AreEqual("test", result.Name);
+            Assert.AreEqual("TestLinkedService", result.Name);
             Assert.IsNotNull(result.Json);
             Assert.AreEqual(0, target.Errors.Count);
         }
@@ -57,7 +57,7 @@ namespace Adfc.Msbuild.Tests
             Assert.IsNotNull(result);
             Assert.AreEqual("file.json", result.Identity);
             Assert.AreEqual(ArtefactCategory.Pipeline, result.Category);
-            Assert.AreEqual("test", result.Name);
+            Assert.AreEqual("TestPipeline", result.Name);
             Assert.IsNotNull(result.Json);
             Assert.AreEqual(0, target.Errors.Count);
         }
