@@ -27,7 +27,7 @@ namespace Adfc.Msbuild.Tests.Validation
         {
             var artefacts = new List<JsonFile>()
             {
-                await Util.LoadJsonAsync("file.json", JsonSample.LinkedService)
+                await Util.LoadJsonAsync("file.json", TestResource.LinkedService)
             };
 
             var target = new UniqueNameValidation();
@@ -42,9 +42,9 @@ namespace Adfc.Msbuild.Tests.Validation
         {
             var artefacts = new List<JsonFile>()
             {
-                await Util.LoadJsonAsync("linkedservice.json", JsonSample.LinkedService),
-                await Util.LoadJsonAsync("dataset.json", JsonSample.Dataset),
-                await Util.LoadJsonAsync("pipeline.json", JsonSample.Pipeline)
+                await Util.LoadJsonAsync("linkedservice.json", TestResource.LinkedService),
+                await Util.LoadJsonAsync("dataset.json", TestResource.Dataset),
+                await Util.LoadJsonAsync("pipeline.json", TestResource.Pipeline)
             };
 
             var target = new UniqueNameValidation();
@@ -59,8 +59,8 @@ namespace Adfc.Msbuild.Tests.Validation
         {
             var artefacts = new List<JsonFile>()
             {
-                await Util.LoadJsonAsync("file1.json", JsonSample.Dataset),
-                await Util.LoadJsonAsync("file2.json", JsonSample.Dataset)
+                await Util.LoadJsonAsync("file1.json", TestResource.Dataset),
+                await Util.LoadJsonAsync("file2.json", TestResource.Dataset)
             };
 
             var target = new UniqueNameValidation();

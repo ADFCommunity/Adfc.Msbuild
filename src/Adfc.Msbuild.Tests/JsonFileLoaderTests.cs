@@ -12,7 +12,7 @@ namespace Adfc.Msbuild.Tests
         public async Task LoadDatasetFileAsync()
         {
             var target = new JsonFileLoader();
-            using (var reader = new StringReader(JsonSample.Dataset))
+            using (var reader = new StringReader(TestResource.Dataset))
             {
                 await target.LoadAsync("file.json", reader);
             }
@@ -30,7 +30,7 @@ namespace Adfc.Msbuild.Tests
         public async Task LoadLinkedServiceFileAsync()
         {
             var target = new JsonFileLoader();
-            using (var reader = new StringReader(JsonSample.LinkedService))
+            using (var reader = new StringReader(TestResource.LinkedService))
             {
                 await target.LoadAsync("file.json", reader);
             }
@@ -48,7 +48,7 @@ namespace Adfc.Msbuild.Tests
         public async Task LoadPipelineFile()
         {
             var target = new JsonFileLoader();
-            using (var reader = new StringReader(JsonSample.Pipeline))
+            using (var reader = new StringReader(TestResource.Pipeline))
             {
                 await target.LoadAsync("file.json", reader);
             }
@@ -66,7 +66,7 @@ namespace Adfc.Msbuild.Tests
         public async Task LoadConfigFileAsync()
         {
             var target = new JsonFileLoader();
-            using (var reader = new StringReader(JsonSample.Config))
+            using (var reader = new StringReader(TestResource.Config))
             {
                 await target.LoadAsync("file.json", reader);
             }
@@ -123,7 +123,7 @@ namespace Adfc.Msbuild.Tests
         public async Task CannotLoadTwiceAsync()
         {
             var target = new JsonFileLoader();
-            using (var reader = new StringReader(JsonSample.Config))
+            using (var reader = new StringReader(TestResource.Config))
             {
                 await target.LoadAsync("config.json", reader);
                 await Assert.ThrowsExceptionAsync<InvalidOperationException>(() => target.LoadAsync("config.json", reader));

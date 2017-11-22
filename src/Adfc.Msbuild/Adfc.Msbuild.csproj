@@ -11,7 +11,6 @@
     <Company />
     <Product />
     <Description>Build tools for ADF Community project system projects.</Description>
-    <Copyright />
     <Authors>adfcommunity</Authors>
     <!-- forces SDK to copy dependencies into build output to make packing easier -->
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>

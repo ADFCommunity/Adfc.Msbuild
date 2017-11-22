@@ -1,0 +1,14 @@
+﻿{
+  "$schema": "http://datafactories.schema.management.azure.com/schemas/2015-09-01/Microsoft.DataFactory.Table.json",
+  "name": "TestDataset",
+  "properties": {
+    "type": "AzureBlob",
+    "availability": {
+      "frequency": "Day",
+      "interval": 1
+    },
+    "linkedServiceName": "BlobLinkedService",
+    "typeProperties": {
+    }
+  }
+}
