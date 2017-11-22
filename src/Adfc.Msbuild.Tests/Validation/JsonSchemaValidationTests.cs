@@ -12,7 +12,7 @@ namespace Adfc.Msbuild.Tests.Validation
         [TestMethod]
         public async Task ShouldValidateConfigJsonWithExplicitSchema()
         {
-            var jsonFile = new JsonFile("test", "test.json", JObject.Parse(JsonSample.Config), ArtefactCategory.Config);
+            var jsonFile = new JsonFile("test", "test.json", JObject.Parse(TestResource.Config), ArtefactCategory.Config);
             var actual = await ValidateJsonFile(jsonFile);
             Assert.IsNull(actual);
         }
@@ -28,34 +28,41 @@ namespace Adfc.Msbuild.Tests.Validation
         [TestMethod]
         public async Task ShouldReportBuildErrorOnInvalidSchemaUrl()
         {
-            var jsonFile = new JsonFile("test.json", "test", JObject.Parse("{'$schema':'uri://server/path.json'}"), ArtefactCategory.Config);
+            const string identity = "test.json";
+            var jsonFile = new JsonFile("test", identity, JObject.Parse("{'$schema':'uri://server/path.json'}"), ArtefactCategory.Config);
             var actual = await ValidateJsonFile(jsonFile);
             Assert.IsNotNull(actual);
             Assert.AreEqual(ErrorCodes.Adfc0007.Code, actual.Code);
+            Assert.AreEqual(identity, actual.FileName);
         }
 
         [TestMethod]
         public async Task ShouldReportBuildErrorOnSchemaUrlNotFound()
         {
-            var jsonFile = new JsonFile("test.json", "test", JObject.Parse("{'$schema':'https://server/notfound.json'}"), ArtefactCategory.Config);
+            const string identity = "test.json";
+            var jsonFile = new JsonFile("test", identity, JObject.Parse("{'$schema':'https://server/notfound.json'}"), ArtefactCategory.Config);
             var actual = await ValidateJsonFile(jsonFile);
             Assert.IsNotNull(actual);
             Assert.AreEqual(ErrorCodes.Adfc0007.Code, actual.Code);
+            Assert.AreEqual(identity, actual.FileName);
         }
 
         [TestMethod]
         public async Task ShouldReportBuildErrorOnInvalidSchemaContent()
         {
-            var jsonFile = new JsonFile("test.json", "test", JObject.Parse("{'$schema':'https://server/notjson.xml'}"), ArtefactCategory.Config);
+            const string identity = "test.json";
+            var jsonFile = new JsonFile("test", identity, JObject.Parse("{'$schema':'https://server/notjson.xml'}"), ArtefactCategory.Config);
             var actual = await ValidateJsonFile(jsonFile);
             Assert.IsNotNull(actual);
             Assert.AreEqual(ErrorCodes.Adfc0007.Code, actual.Code);
+            Assert.AreEqual(identity, actual.FileName);
         }
 
         [TestMethod]
         public async Task ShouldReportSchemaDownloadErrorOnNetworkError()
         {
-            var jsonFile = new JsonFile("test", "test.json", JObject.Parse(JsonSample.Config), ArtefactCategory.Config);
+            const string identity = "test.json";
+            var jsonFile = new JsonFile("test", identity, JObject.Parse(TestResource.Config), ArtefactCategory.Config);
             BuildError actual;
             using (var httpMessageHandler = new MockNoNetworkHttpMessageHandler())
             using (var httpClient = new HttpClient(httpMessageHandler))
@@ -65,33 +72,40 @@ namespace Adfc.Msbuild.Tests.Validation
             }
             Assert.IsNotNull(actual);
             Assert.AreEqual(ErrorCodes.Adfc0007.Code, actual.Code);
+            Assert.AreEqual(identity, actual.FileName);
         }
 
         [TestMethod]
         public async Task ShouldReportBuildErrorOnExplicitSchemaValidationFailure()
         {
-            var jsonFile = new JsonFile("test.json", "test", JObject.Parse("{'$schema':'" + JsonSchemaUri.Config + "','artefact':{}}"), ArtefactCategory.Config);
+            const string identity = "test.json";
+            var jsonFile = new JsonFile("test", identity, JObject.Parse("{'$schema':'" + JsonSchemaUri.Config + "','artefact':{}}"), ArtefactCategory.Config);
             var actual = await ValidateJsonFile(jsonFile);
             Assert.IsNotNull(actual);
             Assert.AreEqual(ErrorCodes.Adfc0005.Code, actual.Code);
+            Assert.AreEqual(identity, actual.FileName);
         }
 
         [TestMethod]
         public async Task ShouldReportBuildErrorOnImplicitSchemaValidationFailure()
         {
-            var jsonFile = new JsonFile("test.json", "test", JObject.Parse("{'artefact':{}}"), ArtefactCategory.Config);
+            const string identity = "test.json";
+            var jsonFile = new JsonFile("test", identity, JObject.Parse("{'artefact':{}}"), ArtefactCategory.Config);
             var actual = await ValidateJsonFile(jsonFile);
             Assert.IsNotNull(actual);
             Assert.AreEqual(ErrorCodes.Adfc0006.Code, actual.Code);
+            Assert.AreEqual(identity, actual.FileName);
         }
 
         [TestMethod]
         public async Task ShouldReportBuildErrorOnImplicitSchemaValidationFailureAfterSuccessfulExplicitSchemaValidation()
         {
-            var jsonFile = new JsonFile("test.json", "test", JObject.Parse("{'$schema':'https://server/emptyschema.json','artefact':{}}"), ArtefactCategory.Config);
+            const string identity = "test.json";
+            var jsonFile = new JsonFile("test", identity, JObject.Parse("{'$schema':'https://server/emptyschema.json','artefact':{}}"), ArtefactCategory.Config);
             var actual = await ValidateJsonFile(jsonFile);
             Assert.IsNotNull(actual);
             Assert.AreEqual(ErrorCodes.Adfc0006.Code, actual.Code);
+            Assert.AreEqual(identity, actual.FileName);
         }
 
         private async Task<BuildError> ValidateJsonFile(JsonFile jsonFile)
