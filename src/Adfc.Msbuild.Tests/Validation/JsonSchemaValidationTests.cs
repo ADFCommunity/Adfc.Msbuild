@@ -12,7 +12,7 @@ namespace Adfc.Msbuild.Tests.Validation
         [TestMethod]
         public async Task ShouldValidateConfigJsonWithExplicitSchema()
         {
-            var jsonFile = new JsonFile("test", "test.json", JObject.Parse(TestResource.Config), ArtefactCategory.Config);
+            var jsonFile = new JsonFile("test", "test.json", JObject.Parse(JsonSample.Config), ArtefactCategory.Config);
             var actual = await ValidateJsonFile(jsonFile);
             Assert.IsNull(actual);
         }
@@ -62,7 +62,7 @@ namespace Adfc.Msbuild.Tests.Validation
         public async Task ShouldReportSchemaDownloadErrorOnNetworkError()
         {
             const string identity = "test.json";
-            var jsonFile = new JsonFile("test", identity, JObject.Parse(TestResource.Config), ArtefactCategory.Config);
+            var jsonFile = new JsonFile("test", identity, JObject.Parse(JsonSample.Config), ArtefactCategory.Config);
             BuildError actual;
             using (var httpMessageHandler = new MockNoNetworkHttpMessageHandler())
             using (var httpClient = new HttpClient(httpMessageHandler))
