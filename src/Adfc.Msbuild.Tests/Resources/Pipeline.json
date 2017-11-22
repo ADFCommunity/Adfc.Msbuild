@@ -1,0 +1,7 @@
+﻿{
+  "$schema": "http://datafactories.schema.management.azure.com/schemas/2015-09-01/Microsoft.DataFactory.Pipeline.json",
+  "name": "TestPipeline",
+  "properties": {
+    "activities": []
+  }
+}

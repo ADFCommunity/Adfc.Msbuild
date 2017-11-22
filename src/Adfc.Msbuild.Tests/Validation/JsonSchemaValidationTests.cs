@@ -1,8 +1,8 @@
-using System.Net.Http;
-using System.Threading.Tasks;
+using Adfc.Msbuild.Validation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
-using Adfc.Msbuild.Validation;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Adfc.Msbuild.Tests.Validation
 {
@@ -12,7 +12,7 @@ namespace Adfc.Msbuild.Tests.Validation
         [TestMethod]
         public async Task ShouldValidateConfigJsonWithExplicitSchema()
         {
-            var jsonFile = new JsonFile("test", "test.json", JObject.Parse(JsonSample.Config), ArtefactCategory.Config);
+            var jsonFile = new JsonFile("test", "test.json", JObject.Parse(TestResource.Config), ArtefactCategory.Config);
             var actual = await ValidateJsonFile(jsonFile);
             Assert.IsNull(actual);
         }
@@ -62,7 +62,7 @@ namespace Adfc.Msbuild.Tests.Validation
         public async Task ShouldReportSchemaDownloadErrorOnNetworkError()
         {
             const string identity = "test.json";
-            var jsonFile = new JsonFile("test", identity, JObject.Parse(JsonSample.Config), ArtefactCategory.Config);
+            var jsonFile = new JsonFile("test", identity, JObject.Parse(TestResource.Config), ArtefactCategory.Config);
             BuildError actual;
             using (var httpMessageHandler = new MockNoNetworkHttpMessageHandler())
             using (var httpClient = new HttpClient(httpMessageHandler))
@@ -106,6 +106,34 @@ namespace Adfc.Msbuild.Tests.Validation
             Assert.IsNotNull(actual);
             Assert.AreEqual(ErrorCodes.Adfc0006.Code, actual.Code);
             Assert.AreEqual(identity, actual.FileName);
+        }
+
+        [TestMethod]
+        public async Task ShouldValidateLinkedService()
+        {
+            var jsonFile = await Util.LoadJsonAsync("linkedservice.json", TestResource.LinkedService);
+            var actual = await ValidateJsonFile(jsonFile);
+            Assert.IsNull(actual);
+        }
+
+        [TestMethod]
+        public async Task ShouldValidateDataset()
+        {
+            var jsonFile = await Util.LoadJsonAsync("dataset.json", TestResource.Dataset);
+            var actual = await ValidateJsonFile(jsonFile);
+            if (actual != null)
+            {
+                System.Console.WriteLine(actual.Message);
+            }
+            Assert.IsNull(actual);
+        }
+
+        [TestMethod]
+        public async Task ShouldValidatePipeline()
+        {
+            var jsonFile = await Util.LoadJsonAsync("pipeline.json", TestResource.Pipeline);
+            var actual = await ValidateJsonFile(jsonFile);
+            Assert.IsNull(actual);
         }
 
         private async Task<BuildError> ValidateJsonFile(JsonFile jsonFile)
