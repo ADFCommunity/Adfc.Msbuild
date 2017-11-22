@@ -115,7 +115,8 @@ namespace Adfc.Msbuild.Validation
                 var error = new BuildError()
                 {
                     Code = ErrorCodes.Adfc0007.Code,
-                    Message = "Error trying to validate JSON: " + exception.Message
+                    Message = "Error trying to validate JSON: " + exception.Message,
+                    FileName = jsonFile.Identity
                 };
                 return error;
             }
